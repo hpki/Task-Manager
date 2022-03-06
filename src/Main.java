@@ -1,3 +1,6 @@
+import management.Manager;
+import tasks.*;
+
 public class Main {
     public static void main(String[] args) {
         System.out.println("Пришло время практики!");
@@ -16,15 +19,16 @@ public class Main {
         manager.createSubtask(subtask1);
         manager.createSubtask(subtask2);
 
-         System.out.println(manager.epicList);
-         System.out.println(manager.subtaskList);
-        System.out.println(epic1.idSubtaskList);
+        System.out.println(manager.epicList);
+        System.out.println(manager.subtaskList);
+        System.out.println(epic1.getIdSubtaskList());
 
-        System.out.println(epic1.status);
+        System.out.println(epic1.getStatus());
         manager.updateSubtaskInProgress(subtask1);
-        System.out.println(epic1.status);
+        System.out.println(epic1.getStatus());
         manager.updateSubtaskDone(subtask1);
         manager.updateSubtaskDone(subtask2);
-        System.out.println(epic1.status);
+        System.out.println(epic1.getStatus());
+        System.out.println(subtask1.getStatus());
     }
 }

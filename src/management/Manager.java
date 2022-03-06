@@ -1,18 +1,23 @@
+package management;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
+
+import tasks.*;
 
 public class Manager {
-   HashMap<Integer, Task> taskList = new HashMap<>();
-   HashMap<Integer, Subtask> subtaskList = new HashMap<>();
-   HashMap<Integer, Epic> epicList = new HashMap<>();
+    public HashMap<Long, Task> taskList = new HashMap<>();
+    public HashMap<Long, Subtask> subtaskList = new HashMap<>();
+    public HashMap<Long, Epic> epicList = new HashMap<>();
 
-    private static int counter = 1;
-                                                                // 1-Методы для Task
+    private static long counter = 1;
+
+    // 1-Методы для Task
     public void createTask(Task task) { // создание задачи
-        task.id = counter;
+        task.setId(counter);
+        //task.id = counter;
         counter++;
-        taskList.put(task.id, task);
+        taskList.put(task.getId(), task);
     }
 
     public ArrayList<String> getTaskList() {  // возвращение списка задач
@@ -29,20 +34,21 @@ public class Manager {
     }
 
     public void updateTaskInProgress(Task task) { // обновление задачи на IN_PROGRESS
-        task.status = "IN_PROGRESS";
-        taskList.put(task.id, task);
+        task.setStatus(String.valueOf(Task.Status.IN_PROGRESS));
+        taskList.put(task.getId(), task);
     }
 
     public void updateTaskDone(Task task) { // обновление задачи на DONE
-        task.status = "DONE";
-        taskList.put(task.id, task);
+        task.setStatus(String.valueOf(Task.Status.DONE));
+        taskList.put(task.getId(), task);
     }
 
-                                                        /// 2-Методы для Epic
+    /// 2-Методы для Epic
     public void createEpic(Epic epic) {         // создание задачи
-        epic.id = counter;
+        epic.setId(counter);
+        //epic.id = counter;
         counter++;
-        epicList.put(epic.id, epic);
+        epicList.put(epic.getId(), epic);
     }
 
     public ArrayList<String> getEpicList() {     // возвращение списка задач (эпиков)
@@ -58,18 +64,19 @@ public class Manager {
         return epicList.get(id);
     }
 
-    public ArrayList<Integer> getListOfSubtask(Epic epic) {
+    public ArrayList<Long> getListOfSubtask(Epic epic) {
         return epic.getSubtaskList();
     }
-                                                         // 3 - Методы для Subtask
+    // 3 - Методы для Subtask
 
     public void createSubtask(Subtask subtask) {         // создание задачи
-        subtask.id = counter;
+        subtask.setId(counter);
+        //subtask.id = counter;
         counter++;
-        subtaskList.put(subtask.id, subtask);
-        int id = subtask.getEpicId();                   // вытаскиваю ID эпика из сабтаска
+        subtaskList.put(subtask.getId(), subtask);
+        long id = subtask.getEpicId();                   // вытаскиваю ID эпика из сабтаска
         if (epicList.containsKey(id)) {
-            epicList.get(id).setIdSubtaskList(subtask.id);
+            epicList.get(id).setIdSubtaskList(subtask.getId());
         }
     }
 
@@ -82,34 +89,36 @@ public class Manager {
         subtaskList.clear();
     }
 
-    public Subtask getSubtask(int id) {  // получение задачи по id
+    public Subtask getSubtask(int id) {  // получение подзадачи по id
         return subtaskList.get(id);
     }
 
-    public void updateSubtaskInProgress(Subtask subtask) { // обновление задачи на IN_PROGRESS
-        subtask.status = "IN_PROGRESS";
-        subtaskList.put(subtask.id, subtask);
-        epicList.get(subtask.getEpicId()).status = "IN_PROGRESS";
+    public void updateSubtaskInProgress(Subtask subtask) { // обновление под задачи на IN_PROGRESS
+        String status = Task.Status.IN_PROGRESS.toString();
+        subtask.setStatus(status);
+        //subtask.status = "IN_PROGRESS";
+        subtaskList.put(subtask.getId(), subtask);
+        //taskList.put(subtask.getId(), subtask);
     }
 
     public void updateSubtaskDone(Subtask subtask) { // обновление задачи на DONE
-        subtask.status = "DONE";
-        subtaskList.put(subtask.id, subtask);
-        int epicId = subtask.getEpicId();
+        String status = Task.Status.DONE.toString();
+        subtask.setStatus(status);
+        long epicId = subtask.getEpicId();
         ArrayList<Subtask> subList = new ArrayList<>();
-        for(Subtask task : subtaskList.values()) {
+        for (Subtask task : subtaskList.values()) {
             if (task.getEpicId() == epicId) {
                 subList.add(task);
             }
             int count = 0;
-            for (Subtask subtaskOfsubList  : subList) {
-                if ((subtaskOfsubList.status).equals("DONE")) {
+            for (Subtask subtaskOfsubList : subList) {
+                if ((subtaskOfsubList.getStatus()).equals("DONE")) {
                     count++;
                 }
                 if (count >= subList.size()) {
-                    epicList.get(subtask.getEpicId()).status = "DONE";
+                    epicList.get(subtask.getEpicId()).setStatus(Task.Status.DONE.toString());
                 } else {
-                    epicList.get(subtask.getEpicId()).status = "IN_PROGRESS";
+                    epicList.get(subtask.getEpicId()).setStatus(Task.Status.IN_PROGRESS.toString());
                 }
             }
 
