@@ -20,17 +20,22 @@ public class Epic extends Task {
                 '\'' + '}';
     }
 
-    public ArrayList<Long> getIdSubtaskList() {
+    public ArrayList<Long> getIdSubtaskList() {  // для проверки работы программы
         return idSubtaskList;
     }
 
-    public void setIdSubtaskList(long subtaskId) { // для проверки работы программы
+    public void setIdSubtaskList(long subtaskId) {
         idSubtaskList.add(subtaskId);
     }
 
     public ArrayList<Long> getSubtaskList() {
         return idSubtaskList;
     }
+
+    public void removeIdSubtask(long id) {
+        idSubtaskList.remove(id);
+    }
+
 
     public void printArrayList() {               // для проверки работы программы
         for (int i = 0; i < idSubtaskList.size(); i++) {

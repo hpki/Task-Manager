@@ -12,8 +12,7 @@ public interface TaskManager {
     ArrayList<String> getTaskList();
     void clearTaskList();
     Task getTask(long id);
-    void updateTaskInProgress(Task task);
-    void updateTaskDone(Task task);
+    void updateTask(Task task);
 
     // // 2 - Методы для Epic
     void createEpic(Epic epic);
@@ -27,9 +26,10 @@ public interface TaskManager {
     ArrayList<String> getSubtaskList();
     void clearSubtaskList();
     Subtask getSubtask(long id);
-    void updateSubtaskInProgress(Subtask subtask);
-    void updateSubtaskDone(Subtask subtask);
+    void updateSubtask(Subtask subtask);
     public void addIdToEpic(Subtask subtask);
+
+    void remove(long id); // удаление задачи по идентификатору
 
     // метод из ТЗ №3
     List<Task> history();

@@ -7,6 +7,7 @@ public class Task {
     private String status = "NEW";
 
     public enum Status {
+        NEW,
         IN_PROGRESS,
         DONE;
     }
