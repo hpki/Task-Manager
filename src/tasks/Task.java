@@ -4,7 +4,7 @@ public class Task {
     private String name;
     private String description;
     private long id;
-    private String status = "NEW";
+    private Status status = Status.NEW;
 
     public enum Status {
         NEW,
@@ -33,12 +33,11 @@ public class Task {
         return description;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
-
+    public void setStatus(Status status) {
         this.status = status;
     }
 
@@ -51,6 +50,4 @@ public class Task {
                 ", status='" + status +
                 '\'' + '}';
     }
-
-
 }

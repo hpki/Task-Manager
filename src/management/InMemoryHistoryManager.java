@@ -16,12 +16,12 @@ public class InMemoryHistoryManager implements HistoryManager {
         } else {
             browsingHistory.remove(0);
             browsingHistory.add(task);
-             }
-        }
-
-        @Override
-        public List<Task> getHistory() {
-            return browsingHistory;
         }
     }
+
+    @Override
+    public List<Task> getHistory() {
+        return browsingHistory;
+    }
+}
 

@@ -13,8 +13,8 @@ public class Main {
 
         //TaskManager manager = new InMemoryTaskManager();
 
-       // Task task1 = new Task("Купить книгу", "Заказть книгу в интернете");
-       // Task task2 = new Task("Заняться спортом", "Бегать по утрам");
+        // Task task1 = new Task("Купить книгу", "Заказть книгу в интернете");
+        // Task task2 = new Task("Заняться спортом", "Бегать по утрам");
 
         Epic epic1 = new Epic("Ремонт", "Сделать ремонт");
         Epic epic2 = new Epic("Отпуск", "Организовать отдых");
@@ -23,16 +23,22 @@ public class Main {
         Subtask subtask3 = new Subtask("Купить билеты", "Пойти в кассы", 1);
 
         manager.createEpic(epic1);
-        manager.createEpic(epic2);
         System.out.println(manager.getEpic(1));
-        System.out.println(manager.getEpic(2));
         manager.createSubtask(subtask1);
         manager.createSubtask(subtask2);
         manager.createSubtask(subtask3);
         System.out.println(manager.getSubtaskList());
-        manager.remove(1);
-        System.out.println("///////////////////////////////////////////////////");
         System.out.println(manager.getEpic(1));
+        manager.updateSubtask(subtask3);
         System.out.println(manager.getSubtaskList());
+        System.out.println(manager.getEpic(1));
+        manager.remove(4);
+        System.out.println("///////////////////////////////////////////////////");
+        System.out.println(manager.getSubtaskList());
+        System.out.println(manager.getEpic(1));
+        //System.out.println(manager.getSubtaskList());
+        //System.out.println(manager.getEpic(1));
+        // System.out.println(manager.getEpic(1));
+        //System.out.println(manager.getSubtaskList());
     }
 }

@@ -47,16 +47,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override // НОВЫЙ МЕТОД - обновление статуса (универсальный метод)
     public void updateTask(Task task) {
-        switch (task.getStatus()) {
-            case "NEW":
-                task.setStatus(String.valueOf(Task.Status.IN_PROGRESS));
-                taskList.put(task.getId(), task);
-                break;
-            case "IN_PROGRESS":
-                task.setStatus(String.valueOf(Task.Status.DONE));
-                taskList.put(task.getId(), task);
-                break;
-        }
+        taskList.put(task.getId(), task);
     }
 
     // 2-Методы для Epic
@@ -119,17 +110,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override // НОВЫЙ МЕТОД
     public void updateSubtask(Subtask subtask) {
-        switch (subtask.getStatus()) {
-            case "NEW":
-                subtask.setStatus(String.valueOf(Task.Status.IN_PROGRESS));
-                subtaskList.put(subtask.getId(), subtask);
-                epicList.get(subtask.getEpicId()).setStatus(Task.Status.IN_PROGRESS.toString());
-                break;
-            case "IN_PROGRESS":
-                subtask.setStatus(String.valueOf(Task.Status.DONE));
-                subtaskList.put(subtask.getId(), subtask);
-                calculateEpicStatus(subtask);
-        }
+        subtaskList.put(subtask.getId(), subtask);
+        calculateEpicStatus(subtask);
     }
 
     private void calculateEpicStatus(Subtask subtask) {  // метод расчёта статуса Эпика
@@ -140,16 +122,21 @@ public class InMemoryTaskManager implements TaskManager {
                 subList.add(task);
             }
         }
-        int count = 0;
+        int countDONE = 0;
+        int countNEW = 0;
         for (Subtask subtaskOfsubList : subList) {
-            if ((subtaskOfsubList.getStatus()).equals("DONE")) {
-                count++;
+            if ((subtaskOfsubList.getStatus()).equals(Task.Status.DONE)) {
+                countDONE++;
+            } else if ((subtaskOfsubList.getStatus()).equals(Task.Status.NEW)) {
+                countNEW++;
             }
-            if (count >= subList.size()) {
-                epicList.get(subtask.getEpicId()).setStatus(Task.Status.DONE.toString());
-            } else {
-                epicList.get(subtask.getEpicId()).setStatus(Task.Status.IN_PROGRESS.toString());
-            }
+        }
+        if (countDONE >= subList.size()) {
+            epicList.get(subtask.getEpicId()).setStatus(Subtask.Status.DONE);
+        } else if (countNEW >= subList.size()) {
+            epicList.get(subtask.getEpicId()).setStatus(Subtask.Status.NEW);    // добавил условие для NEW
+        } else {
+            epicList.get(subtask.getEpicId()).setStatus(Subtask.Status.IN_PROGRESS);
         }
     }
 
@@ -157,17 +144,10 @@ public class InMemoryTaskManager implements TaskManager {
         if (taskList.containsKey(id)) {
             taskList.remove(id);
         } else if (subtaskList.containsKey(id)) {
-            long epicId = subtaskList.get(id).getEpicId();
+            //long epicId = subtaskList.get(id).getEpicId();
+            Subtask subtask = subtaskList.get(id);
             subtaskList.remove(id);                         // удаляет сабтаск....
-            long count = 0;
-            for (Subtask subtask : subtaskList.values()) {
-                if (subtask.getEpicId() == epicId) {
-                    count = count + 1;
-                }
-            }
-            if (count == 0) {
-                epicList.get(epicId).setStatus("NEW");   // ... исправляет статус Эпика
-            }
+            calculateEpicStatus(subtask);
         } else if (epicList.containsKey(id)) {
             epicList.remove(id);                  // при удалении Epic удаляет все подзадачи этого эпика
             ArrayList<Subtask> subList = new ArrayList<>(subtaskList.values());
@@ -177,10 +157,6 @@ public class InMemoryTaskManager implements TaskManager {
                 }
             }
         }
-    }
-
-    @Override
-    public void addIdToEpic(Subtask subtask) {
     }
 
     @Override
