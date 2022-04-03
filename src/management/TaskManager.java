@@ -46,6 +46,11 @@ public interface TaskManager {
 
     // метод из ТЗ №3
     List<Task> history();
+
+    int getSize();
+
+    void removeInHistory(long id);
+
 }
 
 

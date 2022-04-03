@@ -163,4 +163,15 @@ public class InMemoryTaskManager implements TaskManager {
     public List<Task> history() { // возвращает список последних 10-ти тасков
         return historyManager.getHistory();
     }
+
+    @Override
+    public int getSize() {
+        return historyManager.getSize();
+    }
+
+    @Override
+    public void removeInHistory(long id) {
+        historyManager.removeInHistory(id);
+    }
+
 }
