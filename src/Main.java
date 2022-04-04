@@ -67,7 +67,7 @@ public class Main {
         System.out.println(manager.history());
 
         //метод removeInHistory использует removeNode, но с ошибкой.
-        // при этом метод removeNode трабатывает корректно внутри метода add
+        // при этом метод removeNode отрабатывает корректно внутри метода add
         // также при выводе истории в массив выводится только первый элемент
     }
 }

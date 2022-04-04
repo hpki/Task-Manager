@@ -3,16 +3,14 @@ package management;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import org.w3c.dom.ls.LSOutput;
 import tasks.*;
 
 public class InMemoryTaskManager implements TaskManager {
-    public HashMap<Long, Task> taskList = new HashMap<>();
-    public HashMap<Long, Subtask> subtaskList = new HashMap<>();
-    public HashMap<Long, Epic> epicList = new HashMap<>();
+    private HashMap<Long, Task> taskList = new HashMap<>();
+    private HashMap<Long, Subtask> subtaskList = new HashMap<>();
+    private HashMap<Long, Epic> epicList = new HashMap<>();
 
-    public HistoryManager historyManager = Managers.getDefaultHistory();   // объект для хранения последних 10-ти задач
+    private HistoryManager historyManager = Managers.getDefaultHistory();   // объект для хранения последних 10-ти задач
 
     private static long counter = 0;
 
@@ -71,7 +69,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Epic getEpic(long id) {  // получение задачи по id
-        historyManager.add(epicList.get(id)); // добавление задачи в список последних 10-ти вызыввемых задач
+        historyManager.add(epicList.get(id)); // добавление задачи в список последних 10-ти вызываемых задач
         return epicList.get(id);
     }
 
@@ -104,7 +102,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Subtask getSubtask(long id) {  // получение подзадачи по id
-        historyManager.add(subtaskList.get(id)); // добавление задачи в список последних 10-ти вызыввемых задач
+        historyManager.add(subtaskList.get(id)); // добавление задачи в список последних 10-ти вызываемых задач
         return subtaskList.get(id);
     }
 
