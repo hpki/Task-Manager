@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Epic extends Task {
 
     protected ArrayList<Long> idSubtaskList = new ArrayList<>();
+    private TypeTask type = TypeTask.EPIC;
 
     public Epic(String name, String description) {
         super(name, description);

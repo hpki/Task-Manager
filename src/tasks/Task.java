@@ -5,11 +5,18 @@ public class Task {
     private String description;
     private long id;
     private Status status = Status.NEW;
+    private TypeTask type = TypeTask.TASK;
 
     public enum Status {
         NEW,
         IN_PROGRESS,
         DONE;
+    }
+
+    public enum TypeTask {
+        TASK,
+        SUBTASK,
+        EPIC;
     }
 
     public Task(String name, String description) {
@@ -37,6 +44,10 @@ public class Task {
         return status;
     }
 
+    public TypeTask getType() {
+        return type;
+    }
+
     public void setStatus(Status status) {
         this.status = status;
     }
@@ -49,5 +60,9 @@ public class Task {
                 ", id='" + id + '\'' +
                 ", status='" + status +
                 '\'' + '}';
+    }
+
+    public void setType(TypeTask type) {
+        this.type = type;
     }
 }
