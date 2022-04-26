@@ -185,131 +185,83 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
     }
 
-
     @Override
     public void createTask(Task task) { // создание задачи
         super.createTask(task);
-        try {
-            save();
-        } catch (ManagerSaveException e) {
-            e.printStackTrace();
-        }
+        save();
     }
 
     @Override
     public void clearTaskList() {  // очистка списка задач
         super.clearTaskList();
-        try {
-            save();
-        } catch (ManagerSaveException e) {
-            e.printStackTrace();
-        }
+        save();
     }
 
     @Override
     public Task getTask(long id) {  // получение задачи по id
         final Task result = super.getTask(id);
-        try {
-            save();
-        } catch (ManagerSaveException e) {
-            e.printStackTrace();
-        }
+        save();
         return result;
     }
+
 
     @Override // НОВЫЙ МЕТОД - обновление статуса (универсальный метод)
     public void updateTask(Task task) {
         super.updateTask(task);
-        try {
             save();
-        } catch (ManagerSaveException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
     public void createEpic(Epic epic) {         // создание задачи (эпика)
         super.createEpic(epic);
-        try {
             save();
-        } catch (ManagerSaveException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
     public void clearEpicList() {  // очистка списка задач
         super.clearEpicList();
-        try {
             save();
-        } catch (ManagerSaveException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
     public Epic getEpic(long id) {  // получение задачи по id
         final Epic result = super.getEpic(id);
-        try {
             save();
-        } catch (ManagerSaveException e) {
-            e.printStackTrace();
-        }
         return result;
     }
 
     @Override
     public void clearSubtaskList() {  // очистка списка задач
         super.clearSubtaskList();
-        try {
             save();
-        } catch (ManagerSaveException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
     public Subtask getSubtask(long id) {  // получение подзадачи по id
         final Subtask result = super.getSubtask(id);
-        try {
             save();
-        } catch (ManagerSaveException e) {
-            e.printStackTrace();
-        }
         return result;
     }
 
     @Override
     public void updateSubtask(Subtask subtask) {
         super.updateSubtask(subtask);
-        try {
             save();
-        } catch (ManagerSaveException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
     public void remove(long id) {
         super.remove(id);
-        try {
             save();
-        } catch (ManagerSaveException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
     public void removeInHistory(long id) {
         super.removeInHistory(id);
-        try {
             save();
-        } catch (ManagerSaveException e) {
-            e.printStackTrace();
-        }
     }
 
-    private class ManagerSaveException extends Exception {
+    private class ManagerSaveException extends RuntimeException {
         public ManagerSaveException() {
         }
     }
