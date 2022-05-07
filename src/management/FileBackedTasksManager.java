@@ -8,6 +8,8 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,26 +20,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     public FileBackedTasksManager(String fileName) {
         this.fileName = fileName;
-    }
-
-    static void main(String[] args) throws IOException {
-        FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager("\\management\\file.csv");
-        Task task1 = new Task("Купить книгу", "Заказть книгу в интернете");
-        Task task2 = new Task("Заняться спортом", "Бегать по утрам");
-        Epic epic1 = new Epic("Ремонт", "Сделать ремонт");
-        Epic epic2 = new Epic("Отпуск", "Организовать отдых");
-        Subtask subtask1 = new Subtask("Поклеить обои", "Купить и поклеить", 1);
-        Subtask subtask2 = new Subtask("Залить пол", "Купить смесь и залить", 1);
-        Subtask subtask3 = new Subtask("Купить билеты", "Пойти в кассы", 1);
-        fileBackedTasksManager.createTask(task1);
-        fileBackedTasksManager.createTask(task2);
-        fileBackedTasksManager.createSubtask(subtask1);
-        fileBackedTasksManager.createSubtask(subtask2);
-        fileBackedTasksManager.createSubtask(subtask3);
-        fileBackedTasksManager.createEpic(epic1);
-        fileBackedTasksManager.createEpic(epic2);
-
-        Files.readString(Path.of(fileBackedTasksManager.fileName));
     }
 
     static private FileBackedTasksManager loadFromFile(File fileName) throws IOException {
@@ -123,14 +105,16 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
         Task taskResult = null;
         String[] split = value.split(",");
-        if (split.length == 5) {
+        if (split.length == 7) {
             long id = Long.parseLong(split[0]);
             String type = split[1];
             String name = split[2];
             String status = split[3];
             String description = split[4];
+            String startTime = split[5];
+            String duration = split[6];
             if (type.equals(Task.TypeTask.TASK)) {
-                Task task = new Task(name, description);
+                Task task = new Task(name, description, LocalDateTime.parse(startTime), Duration.parse(duration));
                 task.setId(id);
                 task.setStatus(Task.Status.valueOf(status));
                 task.setType(Task.TypeTask.TASK);
@@ -149,8 +133,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 String nameSubtask = split[2];
                 String statusSubtask = split[3];
                 String descriptionSubtask = split[4];
+                String startTimeSubtask = split[5];
+                String durationSubtask = split[6];
+
                 long epicId = Long.parseLong(split[5]);
-                Subtask subtask = new Subtask(nameSubtask, descriptionSubtask, epicId);
+                Subtask subtask = new Subtask(nameSubtask, descriptionSubtask, LocalDateTime.parse(startTime), Duration.parse(duration), epicId);
                 subtask.setId(idSubtask);
                 subtask.setStatus(Task.Status.valueOf(statusSubtask));
                 subtask.setType(Task.TypeTask.SUBTASK);
@@ -161,7 +148,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return taskResult;
     }
 
-    private void save() throws ManagerSaveException {
+    private void save()  throws ManagerSaveException {
         try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter(fileName, StandardCharsets.UTF_8))) {
             fileWriter.write("id,type,name,status,description,epic\n");
             for (Task task : getMapTaskList().values()) {
@@ -184,6 +171,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             throw new ManagerSaveException();
         }
     }
+
+
 
     @Override
     public void createTask(Task task) { // создание задачи

@@ -1,8 +1,10 @@
 package management;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.*;
+
 import tasks.*;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -19,11 +21,50 @@ public class InMemoryTaskManager implements TaskManager {
         return counter;
     }
 
+    //public TreeSet<Task> getPrioritizedTasks() {
+
+   //     TreeSet<Task> task = new TreeSet<>()
+  //  }
+
+    Comparator<Task> userComparator = new Comparator<>() { //компаратор для TreeSet
+        @Override
+        public int compare(Task task1, Task task2) {
+            return task1.getStartTime().compareTo(task2.getStartTime());
+        }
+    };
+    Map<Long, Task> taskTree = new TreeMap<Long, Task>((Map<? extends Long, ? extends Task>) userComparator);
+
+    public void putToTree(Task task) {
+        taskTree.put(task.getId(),task);
+    }
+
+    public Map<Long, Task> getPrioritizedTasks() {
+        return taskTree;
+    }
+
+    // метод-валидатор по пересечению во времени
+    public Boolean timeValidate(Task task) {
+        for (Map.Entry<Long, Task> entry: taskList.entrySet()) {
+            if (task.getStartTime().isAfter(entry.getValue().getStartTime()) && task.getEndTime().isBefore(entry.getValue().getEndTime())) {
+                for (Map.Entry<Long, Subtask> entrySub: subtaskList.entrySet()) {
+                    if (task.getStartTime().isAfter(entrySub.getValue().getStartTime()) && task.getEndTime().isBefore(entrySub.getValue().getEndTime())) {
+                        return true;
+                    }
+                }
+            }
+        } return false;
+    }
+
     // 1-Методы для Task
     @Override
     public void createTask(Task task) { // создание задачи
-        task.setId(generateId());
-        taskList.put(task.getId(), task);
+        if (timeValidate(task)) {
+            task.setId(generateId());
+            taskList.put(task.getId(), task);
+            putToTree(task);
+        } else {
+            IOException ex = new IOException();
+        }
     }
 
     @Override
@@ -54,7 +95,42 @@ public class InMemoryTaskManager implements TaskManager {
     public void createEpic(Epic epic) {         // создание задачи (эпика)
         epic.setId(generateId());
         epicList.put(epic.getId(), epic);
+        setEpicStartTime(epic);
+        setEpicEndTime(epic);
+        setEpicDuration(epic);
     }
+
+    public void setEpicStartTime(Epic epic) {  //----расчёт startTime
+        List<Long> listSubtaskId = epic.getIdSubtaskList();
+        Subtask earlierSubtask = null;
+        LocalDateTime earlierStartTime = LocalDateTime.of(22000, 1, 1, 0, 0, 0, 0);;
+        for (Long id : listSubtaskId) {
+            if (subtaskList.get(id).getStartTime().isBefore(earlierStartTime)) {
+                earlierSubtask = subtaskList.get(id);
+            }
+        } epic.setStartTime(earlierSubtask.getStartTime());
+    }
+
+    public void setEpicEndTime(Epic epic) {    //--расчёт endTime
+        List<Long> listSubtaskId = epic.getIdSubtaskList();
+        Subtask laterSubtask = null;
+        LocalDateTime laterEndTime = LocalDateTime.of(1, 1, 1, 0, 0, 0, 0);;
+        for (Long id : listSubtaskId) {
+            if (subtaskList.get(id).getEndTime().isAfter(laterEndTime)) {
+                laterSubtask = subtaskList.get(id);
+            }
+        } epic.setEndTime(laterSubtask.getEndTime());
+    }
+
+    public void setEpicDuration(Epic epic) {
+        List<Long> listSubtaskId = epic.getIdSubtaskList();
+        Duration epicDuration = null;
+        for (Long id : listSubtaskId) {
+            epicDuration = epicDuration.plus(subtaskList.get(id).getDuration());
+        }
+    }
+
+
 
     @Override
     public ArrayList<String> getEpicList() {     // возвращение списка задач (эпиков)
@@ -77,15 +153,21 @@ public class InMemoryTaskManager implements TaskManager {
     public ArrayList<Long> getListOfSubtask(Epic epic) {
         return epic.getSubtaskList();
     }
+
     // 3 - Методы для Subtask
 
     @Override
-    public void createSubtask(Subtask subtask) {         // создание задачи
-        subtask.setId(generateId());
-        subtaskList.put(subtask.getId(), subtask);
-        long id = subtask.getEpicId();                   // вытаскиваю ID эпика из сабтаска
-        if (epicList.containsKey(id)) {
-            epicList.get(id).setIdSubtaskList(subtask.getId());
+    public void createSubtask(Subtask subtask) {
+        if (timeValidate(subtask))  {
+            subtask.setId(generateId());
+            subtaskList.put(subtask.getId(), subtask);
+            putToTree(subtask);
+            long id = subtask.getEpicId();                   // вытаскиваю ID эпика из сабтаска
+            if (epicList.containsKey(id)) {
+                epicList.get(id).setIdSubtaskList(subtask.getId());
+            }
+        } else {
+            IOException ex = new IOException();
         }
     }
 
@@ -182,6 +264,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     public HashMap<Long, Epic> getMapEpicList() {
         return epicList;
+    }
+
+    class FirstComparator implements Comparator<Task> {
+        @Override public int compare(Task e1, Task e2)
+        {
+            return (e1.getStartTime()).compareTo(e2.getStartTime());
+        }
     }
 
 }

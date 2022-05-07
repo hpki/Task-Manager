@@ -10,13 +10,31 @@ public class InMemoryHistoryManager implements HistoryManager {
     private HashMap<Long, Node> hashMapHistory = new HashMap<>();
 
     public class Node {
-        public Task task;
-        public Node next;
-        public Node prev;
+        public Task task = null;
+        public Node next = null;
+        public Node prev = null;
 
         public Node(Node prev, Task task, Node next) {   // // Конструктор класса Node
             this.task = task;
             this.next = next;
+            this.prev = prev;
+        }
+
+        public Node() {
+        }
+        public Task getTask() {
+            return task;
+        }
+        public Node getNext() {
+            return next;
+        }
+        public void setNext(Node next) {
+            this.next = next;
+        }
+        public Node getPrev() {
+            return prev;
+        }
+        public void setPrev(Node prev) {
             this.prev = prev;
         }
     }
@@ -25,35 +43,45 @@ public class InMemoryHistoryManager implements HistoryManager {
     private Node tail; // указатель на последний объект списка (хвост)
     private int size;
 
-    public void addFirst(Task task) {
-        final Node oldHead = head;
-        final Node newNode = new Node(null, task, oldHead);
-        head = newNode;
-        if (oldHead == null)
-            tail = newNode;
-        else
-            oldHead.prev = newNode;
-        size++;
-    }
-
-    public void linkLast(Task task) {  // добавляет элемент в конец списка
-        final Node oldTail = tail;
-        final Node newNode = new Node(oldTail, task, null);
+    public void linkLast(Task task) {
+        final Node oldLastNode = tail;
+        final Node newNode = new Node(oldLastNode, task, null);
         tail = newNode;
-        if (oldTail == null) {
-            tail = newNode;
-        } else
-            oldTail.prev = newNode;
-        size++;
+        if (oldLastNode == null)
+            head = newNode;
+        else
+            oldLastNode.setNext(newNode);
+        hashMapHistory.put(task.getId(), newNode); //обновление мапы
     }
 
+    public void removeNode(Node node) {
+        if (head == null && tail == null) {
+            return;
+        } else if (head.getNext() == null && tail.getPrev() == null) {
+            head = tail = null;
+        } else {
+            if (node.getPrev() == null) {
+                head = head.getNext();
+                head.setPrev(null);
+            } else if (node.getNext() == null) {
+                tail = tail.getPrev();
+                tail.setNext(null);
+            } else {
+                Node prevTaskNode = node.getPrev();
+                Node nextTaskNode = node.getNext();
+                prevTaskNode.setNext(nextTaskNode);
+                nextTaskNode.setPrev(prevTaskNode);
+            }
+        }
+        hashMapHistory.remove(node.getTask().getId());
+    }
 
     public List<Task> getTasks() {
         List<Task> taskHistory = new ArrayList<>();
-        Node node = head;
-        while (node != null) {
-            taskHistory.add(node.task);
-            node = node.next;
+        for (Map.Entry<Long, Node> entry: hashMapHistory.entrySet()) {
+            Node node = entry.getValue();
+            Task task = node.task;
+            taskHistory.add(task);
         }
         return taskHistory;
     }
@@ -61,7 +89,8 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public void add(Task task) {
         if (size == 0) {
-            addFirst(task);
+            //addFirst(task);
+            linkLast(task);
             hashMapHistory.put(task.getId(), head);
         } else if (hashMapHistory.containsKey(task.getId())) {
             removeNode(hashMapHistory.get(task.getId()));
@@ -72,29 +101,15 @@ public class InMemoryHistoryManager implements HistoryManager {
         hashMapHistory.put(task.getId(), tail);
     }
 
-    public void removeNode(Node node) {
-        if (node.next == null) {      //если node является tail
-            tail = node.prev;
-            node.prev.next = null;
-            node = null;
-        } else if (node.prev == null) {    //если node является head
-            node.next.prev = null;
-            head = node.next;
-        } else {
-            Node nodeNext = node.next;      //если node находится в середине
-            node.prev.next = nodeNext;
-        }
-    }
-
     @Override
     public void removeInHistory(long id) {   // название изменил (не как в ТЗ)
         if (hashMapHistory.get(id).task instanceof Epic) {
-            hashMapHistory.remove(id);
-            removeNode(hashMapHistory.get(id));
             List<Long> idSubtaskList = ((Epic) hashMapHistory.get(id).task).getSubtaskList();
+            removeNode(hashMapHistory.get(id));
+            hashMapHistory.remove(id);
             for (Long key : idSubtaskList) {
-                    hashMapHistory.remove(key);
                     removeNode(hashMapHistory.get(key));
+                    hashMapHistory.remove(key);
             }
         } else hashMapHistory.remove(id);
                 removeNode(hashMapHistory.get(id));
@@ -109,6 +124,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     public int getSize() {
         return hashMapHistory.size();
     }
+
 
 }
 

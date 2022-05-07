@@ -1,6 +1,7 @@
 package management;
 import tasks.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 public interface HistoryManager {
@@ -12,5 +13,6 @@ public interface HistoryManager {
     List<Task> getHistory();
 
     int getSize();
+
 
 }
