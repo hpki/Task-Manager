@@ -5,6 +5,8 @@ import management.TaskManager;
 import tasks.*;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class Main {
     public static void main(String[] args) {
@@ -16,16 +18,24 @@ public class Main {
 
         FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager("\\file.csv");
 
-        //TaskManager manager = new InMemoryTaskManager();
+         Task task1 = new Task("Купить книгу", "Заказть книгу в интернете",
+                 LocalDateTime.of(2022, 1, 1, 0, 0, 0, 0),
+                 Duration.ofHours(6));
+         Task task2 = new Task("Заняться спортом", "Бегать по утрам",
+                 LocalDateTime.of(2023, 1, 1, 0, 0, 0, 0),
+                 Duration.ofHours(6));
 
-        // Task task1 = new Task("Купить книгу", "Заказть книгу в интернете");
-       //  Task task2 = new Task("Заняться спортом", "Бегать по утрам");
-
-       // Epic epic1 = new Epic("Ремонт", "Сделать ремонт");
-      //  Epic epic2 = new Epic("Отпуск", "Организовать отдых");
-      //  Subtask subtask1 = new Subtask("Поклеить обои", "Купить и поклеить", 1);
-       // Subtask subtask2 = new Subtask("Залить пол", "Купить смесь и залить", 1);
-       // Subtask subtask3 = new Subtask("Купить билеты", "Пойти в кассы", 1);
+        Epic epic1 = new Epic("Ремонт", "Сделать ремонт");
+        Epic epic2 = new Epic("Отпуск", "Организовать отдых");
+        Subtask subtask1 = new Subtask("Поклеить обои", "Купить и поклеить",
+                LocalDateTime.of(2000, 1, 1, 0, 0, 0, 0),
+                Duration.ofHours(6), 1);
+        Subtask subtask2 = new Subtask("Залить пол", "Купить смесь и залить",
+                LocalDateTime.of(2020, 1, 1, 0, 0, 0, 0),
+                Duration.ofHours(6), 1);
+        Subtask subtask3 = new Subtask("Купить билеты", "Пойти в кассы",
+                LocalDateTime.of(2021, 1, 1, 0, 0, 0, 0),
+                Duration.ofHours(6), 1);
 
         manager.createTask(task1);
         fileBackedTasksManager.createTask(task1);
@@ -78,8 +88,6 @@ public class Main {
         System.out.println(manager.getSize());
         System.out.println(manager.history());
 
-        //метод removeInHistory использует removeNode, но с ошибкой.
-        // при этом метод removeNode отрабатывает корректно внутри метода add
 
     }
 }

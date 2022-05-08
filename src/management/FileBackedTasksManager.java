@@ -60,7 +60,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return fileBackedTasksManager;
     }
 
-    static String toString(HistoryManager manager) { //метод перевода истории вызовов в строку
+    private static String toString(HistoryManager manager) { //метод перевода истории вызовов в строку
         StringBuilder sb = new StringBuilder();
         for (Task task : manager.getHistory()) {
             sb.append(task.getId() + ",");
@@ -68,7 +68,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return sb.toString();
     }
 
-    static List<Long> fromStringHistory(String value) {
+    private static List<Long> fromStringHistory(String value) {
         ArrayList<Long> listTaskHistory = new ArrayList<>();
         String[] split = value.split(",");
         for (String id : split) {
@@ -77,7 +77,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return listTaskHistory;
     }
 
-    public String toString(Task task) { //метод перевода задачи и эпика в строку
+    private String toString(Task task) { //метод перевода задачи и эпика в строку
         Task.TypeTask type = task.getType();
         StringBuilder sb = new StringBuilder();
         switch (type) {
@@ -101,7 +101,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
 
-    public Task fromString(String value) {  //метод перевода строки в задачу
+    private Task fromString(String value) {  //метод перевода строки в задачу
 
         Task taskResult = null;
         String[] split = value.split(",");
@@ -150,7 +150,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     private void save()  throws ManagerSaveException {
         try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter(fileName, StandardCharsets.UTF_8))) {
-            fileWriter.write("id,type,name,status,description,epic\n");
+            fileWriter.write("id,type,name,status,description,startTime,durtion,epic\n");
             for (Task task : getMapTaskList().values()) {
                 String string = toString(task);
                 fileWriter.write(string + "\n");

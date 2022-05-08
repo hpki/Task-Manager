@@ -81,6 +81,22 @@ public class Task {
         this.status = status;
     }
 
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public LocalDateTime getEndTimeEpic() {
+        return endTime;
+    }
+
     @Override
     public String toString() {
         return "Task{" +

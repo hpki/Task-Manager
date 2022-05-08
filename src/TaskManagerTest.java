@@ -6,6 +6,8 @@ import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -113,7 +115,9 @@ abstract class TaskManagerTest<T extends TaskManager> {
     void getListOfSubtaskTest() {
         Epic epic = new Epic("Test addEpic", "Test addEpic description");
         taskManager.createEpic(epic);
-        Subtask subtask = new Subtask("Test addSubtask", "Test addSubtask description", epic.getId());
+        Subtask subtask = new Subtask("Test addSubtask", "Test addSubtask description",
+                LocalDateTime.of(2000, 1, 1, 0, 0, 0, 0),
+                Duration.ofHours(6), epic.getId());
         taskManager.createEpic(epic);
         List<Long> idSubtaskList = taskManager.getListOfSubtask(epic);
         long id = idSubtaskList.get(0);
@@ -122,7 +126,9 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void createSubtaskTest() {
-        Subtask subtask = new Subtask("Test addSubtask", "Test addSubtask description", 1);
+        Subtask subtask = new Subtask("Test addSubtask", "Test addSubtask description",
+                LocalDateTime.of(2000, 1, 1, 0, 0, 0, 0),
+                Duration.ofHours(6), 1);
         taskManager.createSubtask(subtask);
 
         final long idSubtask = subtask.getId();
@@ -140,7 +146,9 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void clearSubtaskListTest() {
-        Subtask subtask = new Subtask("Test addSubtask", "Test addSubtask description", 1);
+        Subtask subtask = new Subtask("Test addSubtask", "Test addSubtask description",
+                LocalDateTime.of(2000, 1, 1, 0, 0, 0, 0),
+                Duration.ofHours(6), 1);
         taskManager.createSubtask(subtask);
 
         final List<String> subtaskList = taskManager.getSubtaskList();
@@ -152,7 +160,9 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void getSubtaskTest() {
-        Subtask subtask = new Subtask("Test addSubtask", "Test addSubtask description", 1);
+        Subtask subtask = new Subtask("Test addSubtask", "Test addSubtask description",
+                LocalDateTime.of(2000, 1, 1, 0, 0, 0, 0),
+                Duration.ofHours(6),1);
         taskManager.createSubtask(subtask);
         long id = subtask.getId();
         taskManager.getSubtask(id);
@@ -161,12 +171,16 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void updateSubtaskTest() {
-        Subtask subtask = new Subtask("Test SubtaskName", "Test SubtaskName description", 1);
+        Subtask subtask = new Subtask("Test SubtaskName", "Test SubtaskName description",
+                LocalDateTime.of(2000, 1, 1, 0, 0, 0, 0),
+                Duration.ofHours(6),1);
         taskManager.createSubtask(subtask);
         List<String> subtaskList = taskManager.getSubtaskList();
         String nameSubtask = subtaskList.get(0);
 
-        Subtask subtask1 = new Subtask("Test anotherSubtaskName", "Test addTask description", 1);
+        Subtask subtask1 = new Subtask("Test anotherSubtaskName", "Test addTask description",
+                LocalDateTime.of(2000, 1, 1, 0, 0, 0, 0),
+                Duration.ofHours(6),1);
         taskManager.updateTask(subtask1);
         String nameSubtask1 = subtaskList.get(0);
         assertEquals(nameSubtask, nameSubtask1, "Задачи одинаковые.");
@@ -178,8 +192,12 @@ abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.createEpic(epic);
         assertEquals(Task.Status.NEW, epic.getStatus(), "Статусы не совпадают."); // нет подзадач
 
-        Subtask subtask1 = new Subtask("Test SubtaskName1", "Test SubtaskName1 description", 1);
-        Subtask subtask2 = new Subtask("Test SubtaskName2", "Test SubtaskName2 description", 1);
+        Subtask subtask1 = new Subtask("Test SubtaskName1", "Test SubtaskName1 description",
+                LocalDateTime.of(2000, 1, 1, 0, 0, 0, 0),
+                Duration.ofHours(6),1);
+        Subtask subtask2 = new Subtask("Test SubtaskName2", "Test SubtaskName2 description",
+                LocalDateTime.of(2000, 1, 1, 0, 0, 0, 0),
+                Duration.ofHours(6),1);
         taskManager.createSubtask(subtask1);
         taskManager.createSubtask(subtask2);
         assertEquals(Task.Status.NEW, epic.getStatus(), "Статусы не совпадают."); //все подзадачи NEW
@@ -211,7 +229,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.remove(epic.getId());
         assertNotNull(taskManager.getEpicList(), "Список эпиков пуст");   // при удалении Epic
 
-        Subtask subtask = new Subtask("Test addSubtask", "Test addSubtask description", 1);
+        Subtask subtask = new Subtask("Test addSubtask", "Test addSubtask description", LocalDateTime.of(2000, 1, 1, 0, 0, 0, 0),
+                Duration.ofHours(6),1);
         taskManager.createSubtask(subtask);
         taskManager.remove(subtask.getId());
         assertNotNull(taskManager.getSubtaskList(), "Список подзадач пуст");   // при удалении Subtask
