@@ -33,7 +33,7 @@ public class InMemoryTaskManager implements TaskManager {
         taskTree.put(task.getId(), task);
     }
 
-    private Map<Long, Task> getPrioritizedTasks() {
+    public Map<Long, Task> getPrioritizedTasks() {
         return taskTree;
     }
 
@@ -254,14 +254,17 @@ public class InMemoryTaskManager implements TaskManager {
         historyManager.removeInHistory(id);
     }
 
+    @Override
     public HashMap<Long, Task> getMapTaskList() {
         return taskList;
     }
 
+    @Override
     public HashMap<Long, Subtask> getMapSubtaskList() {
         return subtaskList;
     }
 
+    @Override
     public HashMap<Long, Epic> getMapEpicList() {
         return epicList;
     }
@@ -271,6 +274,22 @@ public class InMemoryTaskManager implements TaskManager {
         public int compare(Task e1, Task e2) {
             return (e1.getStartTime()).compareTo(e2.getStartTime());
         }
+    }
+
+    //для ТЗ №7
+    @Override
+    public ArrayList<Task> getAllTasks() {
+        Map<Long, Task> tasksMap =  getPrioritizedTasks();
+        ArrayList<Task> allTasks = null;
+        for (Task task : tasksMap.values()) {
+            allTasks.add(tasksMap.get(task));
+        }
+        return allTasks;
+    }
+
+    @Override
+    public void deliteAllTasks() {
+        taskTree = null;
     }
 
 }

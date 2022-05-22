@@ -22,6 +22,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         this.fileName = fileName;
     }
 
+    public FileBackedTasksManager() {
+    }
+
     static private FileBackedTasksManager loadFromFile(File fileName) throws IOException {
         FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager(fileName.toString());
         FileReader reader = new FileReader(fileName.toString());
@@ -148,7 +151,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return taskResult;
     }
 
-    private void save()  throws ManagerSaveException {
+    public void save()  throws ManagerSaveException {
         try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter(fileName, StandardCharsets.UTF_8))) {
             fileWriter.write("id,type,name,status,description,startTime,durtion,epic\n");
             for (Task task : getMapTaskList().values()) {

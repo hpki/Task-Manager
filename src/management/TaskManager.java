@@ -1,5 +1,6 @@
 package management;
 
+import java.util.HashMap;
 import java.util.List;
 
 import tasks.Epic;
@@ -7,6 +8,7 @@ import tasks.Subtask;
 import tasks.Task;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public interface TaskManager {
     // 1 - Методы для Task
@@ -51,6 +53,16 @@ public interface TaskManager {
 
     void removeInHistory(long id);
 
+    //для ТЗ №7
+    ArrayList<Task> getAllTasks();
+
+    void deliteAllTasks();
+
+    HashMap<Long, Task> getMapTaskList();
+
+    HashMap<Long, Subtask> getMapSubtaskList();
+
+    HashMap<Long, Epic> getMapEpicList();
 }
 
 
