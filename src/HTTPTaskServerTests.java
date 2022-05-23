@@ -13,6 +13,7 @@ import tasks.Task;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -21,8 +22,8 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class HTTPTaskServerTests {
-    static KVServer kvServer;
+public class HTTPTaskServerTests {   // не реализованы HttpTaskManagerTests
+    private static KVServer kvServer;
     HttpTaskServer httpTaskServer;
     static TaskManager manager;
     HttpClient client = HttpClient.newHttpClient();
@@ -35,7 +36,7 @@ public class HTTPTaskServerTests {
     static Subtask subtask3;
 
     @BeforeEach
-    void start() throws IOException {
+    void start() throws IOException, URISyntaxException {
         kvServer = new KVServer();
         kvServer.start();
         manager = Managers.getDefault();
@@ -105,7 +106,6 @@ public class HTTPTaskServerTests {
                 "\"duration\":{\"seconds\":15000,\"nanos\":0},\"startTime\":{\"date\":{\"year\":2026,\"month\":5," +
                 "\"day\":13},\"time\":{\"hour\":10,\"minute\":0,\"second\":0,\"nano\":0}}}";
         assertEquals(string, testString);
-
     }
 
     @Test
@@ -203,7 +203,7 @@ public class HTTPTaskServerTests {
         assertEquals(sendGetRquest("tasks/task").body(), "[]");
     }
 
-
+    @Test
     void deleteSubtasks() {
         sendPostRequest("task", task);
         sendPostRequest("epic", epic1);
@@ -211,6 +211,7 @@ public class HTTPTaskServerTests {
         assertEquals(sendGetRquest("tasks/subtask").body(), "[]");
     }
 
+    @Test
     void deleteEpics() {
         sendPostRequest("task", task);
         sendPostRequest("epic", epic1);
@@ -218,6 +219,7 @@ public class HTTPTaskServerTests {
         assertEquals(sendGetRquest("tasks/epic").body(), "[]");
     }
 
+    @Test
     void deleteTask() {
         sendPostRequest("task", task);
         sendPostRequest("epic", epic1);
@@ -225,6 +227,7 @@ public class HTTPTaskServerTests {
         assertEquals(sendGetRquest("tasks/task/?id=1").body(), "[]");
     }
 
+    @Test
     void deleteSubtask() {
         sendPostRequest("task", task);
         sendPostRequest("epic", epic1);
@@ -232,6 +235,7 @@ public class HTTPTaskServerTests {
         assertEquals(sendGetRquest("tasks/subtasktask/?id=3").body(), "[]");
     }
 
+    @Test
     void deleteEpic() {
         sendPostRequest("task", task);
         sendPostRequest("epic", epic1);
@@ -240,7 +244,7 @@ public class HTTPTaskServerTests {
     }
 
     void sendPostRequest(String path, Task newTask) {
-        HttpResponse<String> response = null;
+        HttpResponse<String> response;
         try {
             URI url = URI.create("http://localhost:8080/tasks/" + path);
             Gson gson = new Gson();
@@ -254,7 +258,6 @@ public class HTTPTaskServerTests {
         } catch (IOException | InterruptedException e) {
             System.out.println("");
         }
-
     }
 
     HttpResponse<String> sendGetRquest(String path) {

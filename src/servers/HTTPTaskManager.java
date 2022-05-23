@@ -11,6 +11,7 @@ import tasks.Task;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -90,15 +91,13 @@ public class HTTPTaskManager extends FileBackedTasksManager {
         for (Subtask subtask : subTasks) {
             loader.createSubtaskWhenLoad(subtask);
         }
-        // loader.setUin(loadedManager.getManagerEpicsMap().size() + loadedManager.getManagerTasksMap().size()
-        //        + loadedManager.getManagerSubTasksMap().size());
         for (int i = 0; i < history.size(); i++) {
             loader.history().add(loader.getTask(history.get(i)));
         }
         return loader;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws URISyntaxException {
         try {
             new KVServer().start();
         } catch (IOException e) {
@@ -156,7 +155,6 @@ public class HTTPTaskManager extends FileBackedTasksManager {
         System.out.println(manager.client.load("epicsKey"));
         System.out.println(manager.client.load("historyKey"));
 
-        HTTPTaskManager newManager = loadFromClient(manager.client);
         String firstManager = manager.history().toString();
         String secondManager = manager.history().toString();
         System.out.println(firstManager.equals(secondManager));

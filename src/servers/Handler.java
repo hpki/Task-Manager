@@ -21,8 +21,7 @@ import java.util.List;
 
 public class Handler implements HttpHandler {
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
-    HttpResponse<String> response;
-    HttpExchange exchange;
+    private HttpExchange exchange;
     String[] splittedPath;
     TaskManager manager;
     String path;
@@ -327,13 +326,6 @@ public class Handler implements HttpHandler {
             manager.clearEpicList();
         } else
             exchange.sendResponseHeaders(400, 0);
-    }
-
-    long extractId(String thirdElementOfPath) {
-        String[] thirdElement = thirdElementOfPath.split("\\?id=");
-        if (thirdElement[0].equals("") && isPositiveNumber(thirdElement[2])) {
-            return Long.parseLong(thirdElement[2]);
-        } else return -1;
     }
 }
 
