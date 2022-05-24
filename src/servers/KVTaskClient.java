@@ -28,6 +28,8 @@ public class KVTaskClient {
                 .uri(URI.create(url + "/save/" + key + "?API_KEY=" + apiKey)).version(HttpClient.Version.HTTP_1_1)
                 .header("Accept", "application/json")
                 .build();
+        client.send(request, HttpResponse.BodyHandlers.ofString());
+
     }
 
     public String load(String key) {

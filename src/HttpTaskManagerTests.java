@@ -22,18 +22,18 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class HTTPTaskServerTests {   // не реализованы HttpTaskManagerTests
+public class HttpTaskManagerTests {
     private static KVServer kvServer;
-    HttpTaskServer httpTaskServer;
-    static TaskManager manager;
-    HttpClient client = HttpClient.newHttpClient();
+    private HttpTaskServer httpTaskServer;
+    private static TaskManager manager;
+    private HttpClient client = HttpClient.newHttpClient();
 
-    static Task task;
-    static Epic epic1;
-    static Subtask subtask1;
-    static Subtask subtask2;
-    static Epic epic2;
-    static Subtask subtask3;
+    private static Task task;
+    private static Epic epic1;
+    private static Subtask subtask1;
+    private static Subtask subtask2;
+    private static Epic epic2;
+    private static Subtask subtask3;
 
     @BeforeEach
     void start() throws IOException, URISyntaxException {

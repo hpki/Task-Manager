@@ -22,11 +22,11 @@ import java.util.List;
 public class Handler implements HttpHandler {
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     private HttpExchange exchange;
-    String[] splittedPath;
-    TaskManager manager;
-    String path;
-    String body;
-    Gson gson;
+    private String[] splittedPath;
+    private TaskManager manager;
+    private String path;
+    private String body;
+    private Gson gson;
 
     public Handler(final TaskManager manager) {
         this.manager = manager;
